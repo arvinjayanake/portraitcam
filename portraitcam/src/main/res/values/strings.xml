@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Portrait Cam</string>
+
+    <string name="permission_denied">Permission Denied</string>
+    <string name="permission_denied_txt">You must grant the camera and storage access privileges to use this feature.</string>
+
+</resources>
