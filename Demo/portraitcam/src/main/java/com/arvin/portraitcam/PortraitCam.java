@@ -17,12 +17,11 @@ import java.io.Serializable;
 /**
  * Created by Arvin Jayanake on 20/10/2016.
  */
+public final class PortraitCam {
 
-public class SelfieCam {
+    static final String PIC = "com.arvin.portraitcam.tempselfie";
 
-    private static final String PIC = "com.arvin.selfiecam.tempselfie";
-
-    enum SelectedCam {
+    public enum SelectedCam {
         FRONT_CAM, BACK_CAM
     };
 

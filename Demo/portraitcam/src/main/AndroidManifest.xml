@@ -14,7 +14,7 @@
         android:supportsRtl="true">
 
         <activity
-            android:name=".SelfieCamActivity"
+            android:name=".PortraitCamActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"
             android:screenOrientation="portrait">
         </activity>

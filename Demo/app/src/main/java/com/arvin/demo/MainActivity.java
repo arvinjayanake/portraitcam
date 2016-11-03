@@ -5,14 +5,15 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.arvin.portraitcam.SelfieCam;
-import com.arvin.portraitcam.SelfieCamActivity;
+import com.arvin.portraitcam.PortraitCam;
+import com.arvin.portraitcam.PortraitCamActivity;
 
 import java.io.IOException;
 
@@ -34,18 +35,18 @@ public class MainActivity extends AppCompatActivity {
         btnBackCam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(MainActivity.this, SelfieCamActivity.class);
-                i.putExtra(SelfieCam.CAM_MOD, SelfieCam.BACK_CAM);
-                MainActivity.this.startActivityForResult(i, SelfieCam.CAPTURE_IMAGE);
+                Intent i = new Intent(MainActivity.this, PortraitCamActivity.class);
+                i.putExtra(PortraitCam.CAM_MOD, PortraitCam.BACK_CAM);
+                MainActivity.this.startActivityForResult(i, PortraitCam.CAPTURE_IMAGE);
             }
         });
 
         btnFrontCam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(MainActivity.this, SelfieCamActivity.class);
-                i.putExtra(SelfieCam.CAM_MOD, SelfieCam.FRONT_CAM);
-                MainActivity.this.startActivityForResult(i, SelfieCam.CAPTURE_IMAGE);
+                Intent i = new Intent(MainActivity.this, PortraitCamActivity.class);
+                i.putExtra(PortraitCam.CAM_MOD, PortraitCam.FRONT_CAM);
+                MainActivity.this.startActivityForResult(i, PortraitCam.CAPTURE_IMAGE);
             }
         });
     }
@@ -53,10 +54,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == SelfieCam.CAPTURE_IMAGE) {
+        if (requestCode == PortraitCam.CAPTURE_IMAGE) {
             if (resultCode == Activity.RESULT_OK) {
 
-                String uriString = data.getStringExtra(SelfieCam.IMAGE_URI);
+                String uriString = data.getStringExtra(PortraitCam.IMAGE_URI);
                 Uri uri = Uri.parse(uriString);
 
                 try {
@@ -72,6 +73,11 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     private Bitmap scaleBitmap(Bitmap realImage, float maxImageSize, boolean filter) {

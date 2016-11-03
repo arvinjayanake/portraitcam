@@ -18,7 +18,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-public class SelfieCamActivity extends AppCompatActivity implements SelfieCallback {
+public class PortraitCamActivity extends AppCompatActivity implements PortraitCamCallback {
 
     private final String TAG = "SelfieCamActivity";
     private final int PERMISSION_REQUEST = 954;
@@ -29,7 +29,7 @@ public class SelfieCamActivity extends AppCompatActivity implements SelfieCallba
 
     private ProgressDialog dialog;
 
-    private SelfieCam.SelectedCam selectedCam = SelfieCam.SelectedCam.FRONT_CAM;
+    private PortraitCam.SelectedCam selectedCam = PortraitCam.SelectedCam.FRONT_CAM;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,10 +39,10 @@ public class SelfieCamActivity extends AppCompatActivity implements SelfieCallba
     }
 
     private void initComponents() {
-        if (getIntent().hasExtra(SelfieCam.CAM_MOD)){
-            String camMod = getIntent().getStringExtra(SelfieCam.CAM_MOD);
-            if (camMod.equals(SelfieCam.BACK_CAM)){
-                selectedCam = SelfieCam.SelectedCam.BACK_CAM;
+        if (getIntent().hasExtra(PortraitCam.CAM_MOD)){
+            String camMod = getIntent().getStringExtra(PortraitCam.CAM_MOD);
+            if (camMod.equals(PortraitCam.BACK_CAM)){
+                selectedCam = PortraitCam.SelectedCam.BACK_CAM;
             }
         }
 
@@ -74,7 +74,7 @@ public class SelfieCamActivity extends AppCompatActivity implements SelfieCallba
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
-                SelfieCamActivity.this.finish();
+                PortraitCamActivity.this.finish();
             }
         });
 
@@ -94,7 +94,7 @@ public class SelfieCamActivity extends AppCompatActivity implements SelfieCallba
     }
 
     private void requestPermission() {
-        ActivityCompat.requestPermissions(this,
+        ActivityCompat.requestPermissions(PortraitCamActivity.this,
                 new String[]{
                         Manifest.permission.CAMERA,
                         Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -125,6 +125,7 @@ public class SelfieCamActivity extends AppCompatActivity implements SelfieCallba
                 Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
     }
 
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -154,6 +155,8 @@ public class SelfieCamActivity extends AppCompatActivity implements SelfieCallba
         }
     }
 
+
+
     @Override
     public void onStartSaving() {
         if (dialog != null && dialog.isShowing()) {
@@ -164,12 +167,13 @@ public class SelfieCamActivity extends AppCompatActivity implements SelfieCallba
             dialog = null;
         }
 
-        dialog = ProgressDialog.show(SelfieCamActivity.this, "Saving", "Please wait...", true);
+        dialog = ProgressDialog.show(PortraitCamActivity.this, "Saving", "Please wait...", true);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        onBackPressed();
     }
 
     @Override
@@ -183,10 +187,10 @@ public class SelfieCamActivity extends AppCompatActivity implements SelfieCallba
         }
 
         Intent intent = new Intent();
-        intent.putExtra(SelfieCam.IMAGE_URI, uri.toString());
+        intent.putExtra(PortraitCam.IMAGE_URI, uri.toString());
         setResult(RESULT_OK, intent);
 
-        SelfieCamActivity.this.finish();
+        PortraitCamActivity.this.finish();
     }
 
     @Override

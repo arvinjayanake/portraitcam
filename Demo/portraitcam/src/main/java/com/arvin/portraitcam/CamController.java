@@ -1,7 +1,6 @@
 package com.arvin.portraitcam;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -28,7 +27,7 @@ import java.util.List;
  * Created by Arvin Jayanake on 20/10/2016.
  */
 
-class CamController {
+public class CamController {
 
     private final String TAG = "CamController";
     private final String SAVE_DIR_NAME = "Camera";
@@ -39,21 +38,21 @@ class CamController {
 
     private boolean hasCamera;
     private int cameraId;
-    protected List<Camera.Size> mPictureSizeList;
+    protected List<Size> mPictureSizeList;
     private CameraPreview cameraPreview;
 
-    private SelfieCallback selfieCallback;
-    private SelfieCam.SelectedCam selectedCam;
+    private PortraitCamCallback selfieCallback;
+    private PortraitCam.SelectedCam selectedCam;
 
     private static int mRotation;
 
-    public CamController(Activity activity, SelfieCallback selfieCallback, SelfieCam.SelectedCam selectedCam) {
+    public CamController(Activity activity, PortraitCamCallback selfieCallback, PortraitCam.SelectedCam selectedCam) {
         this.activity = activity;
         this.selfieCallback = selfieCallback;
         this.selectedCam = selectedCam;
 
         if (activity.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
-            if (selectedCam == SelfieCam.SelectedCam.FRONT_CAM){
+            if (selectedCam == PortraitCam.SelectedCam.FRONT_CAM){
                 cameraId = getFrontCameraId();
             }else {
                 cameraId = getBackCameraId();
@@ -104,7 +103,7 @@ class CamController {
     private int getBackCameraId() {
         int camId = -1;
         int numberOfCameras = Camera.getNumberOfCameras();
-        android.hardware.Camera.CameraInfo ci = new CameraInfo();
+        CameraInfo ci = new CameraInfo();
 
         for (int i = 0; i < numberOfCameras; i++) {
             Camera.getCameraInfo(i, ci);
@@ -119,7 +118,7 @@ class CamController {
     private int getFrontCameraId() {
         int camId = -1;
         int numberOfCameras = Camera.getNumberOfCameras();
-        android.hardware.Camera.CameraInfo ci = new CameraInfo();
+        CameraInfo ci = new CameraInfo();
 
         for (int i = 0; i < numberOfCameras; i++) {
             Camera.getCameraInfo(i, ci);
@@ -134,6 +133,15 @@ class CamController {
 
     public CameraPreview getCameraPreview() {
         return cameraPreview;
+    }
+
+    /**
+     * Call this method in activity
+     */
+    public void onPause(){
+        if (cameraPreview != null){
+            cameraPreview.getHolder().removeCallback(cameraPreview);
+        }
     }
 
     private void prepareCamera() {
@@ -178,10 +186,10 @@ class CamController {
         //camera.setDisplayOrientation(90);
 
         try {
-            Camera.Parameters parameters = camera.getParameters();
-            List<Camera.Size> sizes = parameters.getSupportedPictureSizes();
+            Parameters parameters = camera.getParameters();
+            List<Size> sizes = parameters.getSupportedPictureSizes();
 
-            Camera.Size size = sizes.get(0);
+            Size size = sizes.get(0);
             for (int i = 0; i < sizes.size(); i++) {
                 if (sizes.get(i).width > size.width)
                     size = sizes.get(i);
@@ -193,14 +201,14 @@ class CamController {
             parameters.setRotation(90);
 
             //Some devices does not support focus mode
-            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+            parameters.setFocusMode(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
 
             camera.setParameters(parameters);
         }catch (Exception ex){
-            Camera.Parameters parameters = camera.getParameters();
-            List<Camera.Size> sizes = parameters.getSupportedPictureSizes();
+            Parameters parameters = camera.getParameters();
+            List<Size> sizes = parameters.getSupportedPictureSizes();
 
-            Camera.Size size = sizes.get(0);
+            Size size = sizes.get(0);
             for (int i = 0; i < sizes.size(); i++) {
                 if (sizes.get(i).width > size.width)
                     size = sizes.get(i);
@@ -217,9 +225,9 @@ class CamController {
         camera.startPreview();
     }
 
-    public static void setCameraDisplayOrientation(Activity activity, int cameraId, android.hardware.Camera camera) {
-        android.hardware.Camera.CameraInfo info = new android.hardware.Camera.CameraInfo();
-        android.hardware.Camera.getCameraInfo(cameraId, info);
+    public static void setCameraDisplayOrientation(Activity activity, int cameraId, Camera camera) {
+        CameraInfo info = new CameraInfo();
+        Camera.getCameraInfo(cameraId, info);
         int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
 
         int degrees = 0;
@@ -232,7 +240,7 @@ class CamController {
         }
 
         int result;
-        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+        if (info.facing == CameraInfo.CAMERA_FACING_FRONT) {
             result = (info.orientation + degrees) % 360;
             result = (360 - result) % 360;  // compensate the mirror
         } else {  // back-facing
@@ -246,7 +254,7 @@ class CamController {
 
     private PictureCallback mPicture = new PictureCallback() {
         @Override
-        public void onPictureTaken(byte[] data, android.hardware.Camera camera) {
+        public void onPictureTaken(byte[] data, Camera camera) {
             new SaveTask(){
                 @Override
                 protected void onPostExecute(Uri uri) {
@@ -287,7 +295,7 @@ class CamController {
             //Rotate
             Bitmap rotatedBitmap = null;
 
-            if (selectedCam == SelfieCam.SelectedCam.FRONT_CAM){
+            if (selectedCam == PortraitCam.SelectedCam.FRONT_CAM){
                 if (original.getWidth() < original.getHeight()){
                     rotatedBitmap = rotate(original, 180);
                 }else {
@@ -384,3 +392,4 @@ class CamController {
 
 
 }
+

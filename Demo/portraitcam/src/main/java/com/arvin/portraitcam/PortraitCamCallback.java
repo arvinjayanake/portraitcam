@@ -5,8 +5,7 @@ import android.net.Uri;
 /**
  * Created by Arvin Jayanake on 20/10/2016.
  */
-
-interface SelfieCallback {
+public interface PortraitCamCallback {
 
     public void onStartSaving();
 
