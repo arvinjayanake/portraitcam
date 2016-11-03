@@ -44,6 +44,8 @@ public class CamController {
     private PortraitCamCallback selfieCallback;
     private PortraitCam.SelectedCam selectedCam;
 
+    private boolean isCaptureClicked = false;
+
     private static int mRotation;
 
     public CamController(Activity activity, PortraitCamCallback selfieCallback, PortraitCam.SelectedCam selectedCam) {
@@ -68,6 +70,14 @@ public class CamController {
         }
     }
 
+    private boolean isCaptureClicked() {
+        return isCaptureClicked;
+    }
+
+    private void setCaptureClicked(boolean captureClicked) {
+        isCaptureClicked = captureClicked;
+    }
+
     public boolean hasCamera() {
         return hasCamera;
     }
@@ -87,7 +97,8 @@ public class CamController {
     }
 
     public void takePicture() {
-        if (hasCamera) {
+        if (hasCamera && !isCaptureClicked()) {
+            setCaptureClicked(true);
             camera.takePicture(null, null, mPicture);
         }
     }
